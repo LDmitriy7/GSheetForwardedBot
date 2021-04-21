@@ -29,5 +29,5 @@ async def forward_to_group(msg: types.Message):
         channel = sh.get(CHANNEL_KEY, config.CHANNEL)
         group = sh.get(GROUP_KEY, config.GROUP)
 
-    if channel == msg.chat.id or isinstance(channel, str) and channel.strip('@') == msg.chat.username:
+    if channel in [msg.chat.id, '@' + msg.chat.username]:
         await msg.forward(group)
