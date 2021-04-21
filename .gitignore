@@ -1,6 +1,7 @@
 # My
 config.py
 shelve.*
+google_creds.json
 
 ### Python template
 # Byte-compiled / optimized / DLL files
