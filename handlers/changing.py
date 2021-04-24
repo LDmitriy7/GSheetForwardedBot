@@ -3,14 +3,14 @@ import shelve
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from config import SHELVE_FILE, CHANNEL_KEY, GROUP_KEY
+from config import SHELVE_FILE, SHEET_ID_KEY, PRIVATE_GROUP_KEY
 from loader import dp
 
 
-@dp.message_handler(text='Изменить канал', state='*')
+@dp.message_handler(text='Изменить таблицу', state='*')
 async def send_keyboard(msg: types.Message, state: FSMContext):
-    await state.set_state('change:channel')
-    await msg.answer('Введи юзернейм или ID канала')
+    await state.set_state('change:table')
+    await msg.answer('Введи ID таблицы (из ссылки)')
 
 
 @dp.message_handler(text='Изменить группу', state='*')
@@ -19,18 +19,12 @@ async def send_keyboard(msg: types.Message, state: FSMContext):
     await msg.answer('Введи юзернейм или ID группы')
 
 
-@dp.message_handler(state='change:channel')
+@dp.message_handler(state='change:table')
 async def send_keyboard(msg: types.Message, state: FSMContext):
-    try:
-        channel = int(msg.text)
-        await msg.answer(f'Новый ID канала: {channel}')
-    except ValueError:
-        channel = '@' + msg.text.strip('@')
-        await msg.answer(f'Новый юзернейм канала: {channel}')
-
     with shelve.open(SHELVE_FILE) as sh:
-        sh[CHANNEL_KEY] = channel
+        sh[SHEET_ID_KEY] = msg.text
 
+    await msg.answer(f'Новая таблица: {msg.text}')
     await state.finish()
 
 
@@ -44,6 +38,6 @@ async def send_keyboard(msg: types.Message, state: FSMContext):
         await msg.answer(f'Новый юзернейм группы: {group}')
 
     with shelve.open(SHELVE_FILE) as sh:
-        sh[GROUP_KEY] = group
+        sh[PRIVATE_GROUP_KEY] = group
 
     await state.finish()
