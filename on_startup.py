@@ -1,7 +1,7 @@
 import os
 
 DEFAULT_ENV = {
-    'BOT_TOKEN': '',
+    'BOT_TOKEN': ' ',
     'DATABASE_NAME': 'ForwarderBot',
     'DATABASE_HOST': 'mongo',
     'LOG_LEVEL': '20',
