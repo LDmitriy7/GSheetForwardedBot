@@ -1,9 +1,7 @@
-import shelve
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 
-from config import SHELVE_FILE, SHEET_ID_KEY, PRIVATE_GROUP_KEY
+import api
 from loader import dp
 
 
@@ -21,23 +19,19 @@ async def send_keyboard(msg: types.Message, state: FSMContext):
 
 @dp.message_handler(state='change:table')
 async def send_keyboard(msg: types.Message, state: FSMContext):
-    with shelve.open(SHELVE_FILE) as sh:
-        sh[SHEET_ID_KEY] = msg.text
+    config = api.config.get()
+    config.sheet_id = msg.text
+    config.save()
 
-    await msg.answer(f'Новая таблица: {msg.text}')
+    await msg.answer(f'Новая таблица: {config.sheet_id}')
     await state.finish()
 
 
 @dp.message_handler(state='change:group')
 async def send_keyboard(msg: types.Message, state: FSMContext):
-    try:
-        group = int(msg.text)
-        await msg.answer(f'Новый ID группы: {group}')
-    except ValueError:
-        group = '@' + msg.text.strip('@')
-        await msg.answer(f'Новый юзернейм группы: {group}')
+    config = api.config.get()
+    config.group_to_forward_id = msg.text
+    config.save()
 
-    with shelve.open(SHELVE_FILE) as sh:
-        sh[PRIVATE_GROUP_KEY] = group
-
+    await msg.answer(f'Новый ID группы: {config.group_to_forward_id}')
     await state.finish()

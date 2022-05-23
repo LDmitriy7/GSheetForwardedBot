@@ -1,12 +1,19 @@
 from aiogram import executor
 
-import handlers
-import middlewares
-import utils
 from loader import dp
 
-if __name__ == '__main__':
+
+async def on_startup(_):
+    import filters
+    import handlers
+    import middlewares
+    import tasks
+
+    filters.setup(dp)
     handlers.setup()
-    middlewares.setup()
-    utils.setup()
-    executor.start_polling(dp)
+    middlewares.setup(dp)
+    tasks.setup()
+
+
+if __name__ == '__main__':
+    executor.start_polling(dp, on_startup=on_startup)

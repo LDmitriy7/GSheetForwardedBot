@@ -1,2 +1,0 @@
-aiogram~=2.12.1
-gspread~=3.7.0

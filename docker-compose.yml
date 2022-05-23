@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    env_file: .env
+    restart: always
+  mongodb:
+    image: mongo
+    restart: always
+    volumes:
+      - mongodb:/data/db
+volumes:
+  mongodb: null
